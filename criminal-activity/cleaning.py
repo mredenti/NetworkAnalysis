@@ -6,3 +6,8 @@
    the chronological order of the events.
 """
 import csv
+
+
+EVENTS_ATTENDANCE_ORIGINAL = "criminal-activity/datasets/original/NDRANGHETAMAFIA_2M.csv"
+# save cleaned file to a new file
+EVENTS_ATTENDANCE_CLEANED = "criminal-activity/datasets/cleaned/mafia_bipartite.csv"
