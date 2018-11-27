@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 
 # read graph modeling language file format as network
-G = nx.read_gml("NetworkAnalysis/polbooks.gml")
+G = nx.read_gml("NetworkAnalysis/political-books/polbooks.gml")
 # define a function that assigns a color to each book's attribute
 def coloring_books(book):
     # book is liberal
@@ -19,7 +19,7 @@ def coloring_books(book):
 # color each node depending on if book is conservative, liberal, ...
 color_node = list(map(coloring_books, G.nodes(data=True)))
 # plot graph - which is the best layout to communicate results?
-nx.draw_circular(G, node_size=30, with_labels=False, node_color = color_node)
+nx.draw(G, node_size=30, with_labels=False, node_color = color_node)
 # add title - not working
 plt.title("Amazon Co-Purchased Books") 
 plt.show()
