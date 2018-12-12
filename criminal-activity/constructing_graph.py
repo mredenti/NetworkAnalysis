@@ -3,19 +3,34 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import collections
 
+
 # path to cleaned file
 EVENTS_ATTENDANCE_CLEANED = "NetworkAnalysis/criminal-activity/datasets/cleaned/mafia_bipartite.csv"
 # column names - surname will be useful later when we'd like to group them by family
 FULLNAME = "fullname"
-FORENAME =  "forename"
+#FORENAME =  "forename"
 SURNAME = "surname" 
 EVENT_ID = "event"
+# number of events
+NUMB_EVENTS = 47
 
 
-# import cleaned data in pandas dataframe
-data = pd.read_csv(EVENTS_ATTENDANCE_CLEANED)
-# create graph object from pd dataframe
-G = nx.from_pandas_edgelist(df = data, source = FULLNAME, target = EVENT_ID)
+# import cleaned df_events_attendance in pandas df_events_attendanceframe
+df_events_attendance = pd.read_csv(EVENTS_ATTENDANCE_CLEANED)
+# counting the number events attended per individual - degree
+df_degree = df_events_attendance[[FULLNAME,EVENT_ID]].groupby(FULLNAME).count()
+# 
+#G.edges(data=True)
+# create graph object from pd df_events_attendanceframe
+B = nx.from_pandas_edgelist(df = df_events_attendance, source = FULLNAME, target = EVENT_ID)
+# get the two bipartite sets - X will be the indivuals, Y the events
+X,Y = nx.bipartite.sets(B)
+# convert the bipartite graph to a weighted graph of common participation to an event
+G = nx.algorithms.bipartite.weighted_projected_graph(B, X)
+
+"""
+# create graph object from pd df_events_attendanceframe
+G = nx.from_pandas_edgelist(df = df_events_attendance, source = FULLNAME, target = EVENT_ID)
 # get the two bipartite sets
 x,y = nx.bipartite.sets(G)
 pos = dict()
@@ -60,5 +75,5 @@ plt.xlabel("Degree - Number of events attended")
 plt.ylabel("Frequency")
 plt.show()
 plt.close("all")
-# put an attribute to the dataframe as number of events the person participated too
-# his importance in the clan - size of the node.
+# put an attribute to the df_events_attendanceframe as number of events the person participated too
+# his importance in the clan - size of the node."""
