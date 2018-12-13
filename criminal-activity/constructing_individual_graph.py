@@ -17,17 +17,38 @@ NUMB_EVENTS = 47
 
 # import cleaned df_events_attendance in pandas df_events_attendanceframe
 df_events_attendance = pd.read_csv(EVENTS_ATTENDANCE_CLEANED)
-# counting the number events attended per individual - degree
-df_degree = df_events_attendance[[FULLNAME,EVENT_ID]].groupby(FULLNAME).count()
-# 
-#G.edges(data=True)
+# counting the number events attended per individual - degree - attribute
+df_degree = df_events_attendance.groupby([SURNAME, FULLNAME], as_index = False).count()
+# change name of column header
+df_degree.rename(columns = {EVENT_ID: "eventscount"}, inplace = True)
+""" here below we extract the indivuals which are part of a family
+"""
+# set the number of events participated to as zero
+#df_family = df_degree[[SURNAME, FULLNAME]].groupby(SURNAME, as_index = False).count()
+# color - family size
+#df_family.rename(columns = {FULLNAME: "color"}, inplace = True)
+#df_family[df_family["color"] > 1]
+#df_degree = df_degree.merge(df_family, on = ["surname"])
+#df_family["events count"] = 0
+
 # create graph object from pd df_events_attendanceframe
 B = nx.from_pandas_edgelist(df = df_events_attendance, source = FULLNAME, target = EVENT_ID)
 # get the two bipartite sets - X will be the indivuals, Y the events
 X,Y = nx.bipartite.sets(B)
 # convert the bipartite graph to a weighted graph of common participation to an event
 G = nx.algorithms.bipartite.weighted_projected_graph(B, X)
-
+# set number of events attended as node attribute
+df_degree.set_index(FULLNAME, inplace = True)
+nx.set_node_attributes(G, pd.Series(df_degree["eventscount"], index=df_degree.index).to_dict(), "eventscount")
+# set surname as attribute
+nx.set_node_attributes(G, pd.Series(df_degree[SURNAME], index=df_degree.index).to_dict(), SURNAME)
+# edges color
+for u,v in G.edges:
+    if G.nodes[u][SURNAME] == G.nodes[v][SURNAME]:
+        G.edges[u,v]["color"] = "blue"
+    else:
+        G.edges[u,v]["color"] = "black"
+nx.write_gml(G, "NetworkAnalysis/criminal-activity/datasets/graph/individual.gml")
 """
 # create graph object from pd df_events_attendanceframe
 G = nx.from_pandas_edgelist(df = df_events_attendance, source = FULLNAME, target = EVENT_ID)
