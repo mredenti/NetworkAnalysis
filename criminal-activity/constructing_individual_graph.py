@@ -48,6 +48,11 @@ for u,v in G.edges:
         G.edges[u,v]["color"] = "blue"
     else:
         G.edges[u,v]["color"] = "black"
+# node color
+for v in G.nodes:
+    G.nodes[v]["color"] = "red"
+# color black "Pino" - the clan boss
+G.nodes["Pino"]["color"] = "yellow"
 nx.write_gml(G, "NetworkAnalysis/criminal-activity/datasets/graph/individual.gml")
 """
 # create graph object from pd df_events_attendanceframe
