@@ -1,5 +1,6 @@
 import networkx as nx 
 import pandas as pd
+import matplotlib.pyplot as plt
 
 
 # path to cleaned file
@@ -11,7 +12,7 @@ SURNAME = "surname"
 EVENT_ID = "event"
 # number of events
 NUMB_EVENTS = 47
-
+# who has max degree, who participated to most events
 
 # import cleaned df_events_attendance in pandas df_events_attendanceframe
 df_events_attendance = pd.read_csv(EVENTS_ATTENDANCE_CLEANED)
@@ -40,3 +41,15 @@ df_family.set_index(SURNAME, inplace = True)
 nx.set_node_attributes(G, pd.Series(df_family["familysize"], index=df_family.index).to_dict(), "familysize")
 #G.nodes["Pino"]["color"] = "yellow"
 nx.write_gml(G, "NetworkAnalysis/criminal-activity/datasets/graph/family.gml")
+# does a numerous family size have more importance in the network as numb of summits attended
+df = df_family.join(df_degree)
+# familysize 
+average_attendance = [df[df["familysize"] == i]["eventscount"].mean()/i for i in [1,2,4,5,6]]
+average_attendance_binned = [sum(average_attendance[:2])] + [sum(average_attendance[2:])]
+plt.bar(["=< 3", "> 3"], average_attendance_binned , width=0.20, color='b')
+plt.title("Average summits attendance vs family size", pad=20)
+plt.ylabel("Average attendance ÷ family size")
+plt.xlabel("Family size")
+plt.tight_layout()
+plt.grid(axis='y', alpha=0.65)
+plt.savefig('NetworkAnalysis/criminal-activity/images/attendance_vs_fam_size')

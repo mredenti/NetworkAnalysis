@@ -23,14 +23,6 @@ df_degree = df_events_attendance.groupby([SURNAME, FULLNAME], as_index = False).
 df_degree.rename(columns = {EVENT_ID: "eventscount"}, inplace = True)
 """ here below we extract the indivuals which are part of a family
 """
-# set the number of events participated to as zero
-#df_family = df_degree[[SURNAME, FULLNAME]].groupby(SURNAME, as_index = False).count()
-# color - family size
-#df_family.rename(columns = {FULLNAME: "color"}, inplace = True)
-#df_family[df_family["color"] > 1]
-#df_degree = df_degree.merge(df_family, on = ["surname"])
-#df_family["events count"] = 0
-
 # create graph object from pd df_events_attendanceframe
 B = nx.from_pandas_edgelist(df = df_events_attendance, source = FULLNAME, target = EVENT_ID)
 # get the two bipartite sets - X will be the indivuals, Y the events
