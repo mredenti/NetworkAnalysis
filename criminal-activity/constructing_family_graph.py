@@ -28,7 +28,7 @@ df_family.rename(columns = {FULLNAME: "familysize"}, inplace = True)
 # maybe not df_degree = df_degree.merge(df_family, on = [SURNAME])
 # create graph object from pd df_events_attendanceframe
 B = nx.from_pandas_edgelist(df = df_events_attendance, source = SURNAME, target = EVENT_ID)
-# get the two bipartite sets - X will be the indivuals, Y the events
+# get the two bipartite sets - x will be the indivuals, y the events
 X,Y = nx.bipartite.sets(B)
 # convert the bipartite graph to a weighted graph of common participation to an event
 G = nx.algorithms.bipartite.weighted_projected_graph(B, X)

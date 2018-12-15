@@ -21,11 +21,9 @@ df_events_attendance = pd.read_csv(EVENTS_ATTENDANCE_CLEANED)
 df_degree = df_events_attendance.groupby([SURNAME, FULLNAME], as_index = False).count()
 # change name of column header
 df_degree.rename(columns = {EVENT_ID: "eventscount"}, inplace = True)
-""" here below we extract the indivuals which are part of a family
-"""
 # create graph object from pd df_events_attendanceframe
 B = nx.from_pandas_edgelist(df = df_events_attendance, source = FULLNAME, target = EVENT_ID)
-# get the two bipartite sets - X will be the indivuals, Y the events
+# get the two bipartite sets: x will be the indivuals, y the events
 X,Y = nx.bipartite.sets(B)
 # convert the bipartite graph to a weighted graph of common participation to an event
 G = nx.algorithms.bipartite.weighted_projected_graph(B, X)
@@ -46,52 +44,3 @@ for v in G.nodes:
 # color black "Pino" - the clan boss
 G.nodes["Pino"]["color"] = "yellow"
 nx.write_gml(G, "NetworkAnalysis/criminal-activity/datasets/graph/individual.gml")
-"""
-# create graph object from pd df_events_attendanceframe
-G = nx.from_pandas_edgelist(df = df_events_attendance, source = FULLNAME, target = EVENT_ID)
-# get the two bipartite sets
-x,y = nx.bipartite.sets(G)
-pos = dict()
-# for each person name and event obtain a unique position index
-pos.update( (n, (1, i)) for i, n in enumerate(x) ) # put nodes from X at x=1
-pos.update( (n, (2, i)) for i, n in enumerate(y) ) # put nodes from Y at x=2
-nx.draw(G, pos=pos, node_size = 10)
-plt.show()
-plt.close("all")
-# get the degree distribution for the degree of bipartite set x - the criminals - do it for the families too
-member_degree = G.degree(x) 
-# who are the nodes who participate more often to this meetings - are they the key nodes
-# who are the key families?
-def hub(member_degree):
-    # iter creates an object which can be iterated one element at a time
-    iter_member_degree = iter(member_degree)
-    maximum = next(iter_member_degree)
-    for _ in range(len(member_degree)):
-        try:
-            trial = next(iter_member_degree)
-            if trial[1] > maximum[1]:
-                maximum = trial
-            else: 
-                pass
-        except StopIteration:
-            break
-    return maximum
-
-maximum = hub(member_degree)
-
-
-# degree distribution: few nodes participate to many of the events, but no one person participates to all
-# events - but maybe one family participates to all events
-degree_sequence = sorted([degree for name, degree in G.degree(x)], reverse=True)  # degree sequence
-# now count the frequency of each degree 
-degree_count = collections.Counter(degree_sequence)
-degree, frequency = zip(*degree_count.items())
-# plot graph 
-plt.bar(degree, frequency, color = 'b')
-plt.title("Degree Distribution")
-plt.xlabel("Degree - Number of events attended")
-plt.ylabel("Frequency")
-plt.show()
-plt.close("all")
-# put an attribute to the df_events_attendanceframe as number of events the person participated too
-# his importance in the clan - size of the node."""
