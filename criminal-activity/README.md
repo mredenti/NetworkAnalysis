@@ -7,7 +7,7 @@ The dataset has been reconstructed by mostly referring to pp.87-110 of the docum
 ## Title: "Exposing the criminal structure of mafia groups"
 Important: 1 degree - the activity of the family/gang members
            2 degree - weighted degree - level of co-participation (no) - whether the node is present at the most 
-           important meetings?d
+           important meetings?
 
 
 # Data Description 
